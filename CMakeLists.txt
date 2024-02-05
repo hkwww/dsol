@@ -44,14 +44,60 @@ find_package(xtensor) # reading npy
 find_package(GTest REQUIRED)
 find_package(benchmark REQUIRED)
 
-if(NOT catkin_FOUND)
-  set(BUILD_ROS OFF)
-  message(WARN "BUILD_ROS set to OFF because catkin not found.")
-endif()
+include_directories(${catkin_INCLUDE_DIRS})
+include_directories(include)
+
 
 if(BUILD_ROS)
   catkin_package()
 endif()
 
-enable_testing()
-add_subdirectory(sv)
+
+
+# Compile Lib
+
+file(GLOB_RECURSE
+    utils_files
+    ${PROJECT_SOURCE_DIR}/src/utils/*.cpp
+    ${PROJECT_SOURCE_DIR}/src/ros1/*.cpp
+)
+
+add_library (
+    dsol_utils
+    SHARED
+    ${utils_files}
+)
+target_link_libraries(dsol_utils
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    glog::glog
+    absl::flat_hash_map
+    absl::time
+    TBB::tbb
+    fmt::fmt
+    GTest::GTest
+)
+
+file(GLOB_RECURSE
+    core_files
+    ${PROJECT_SOURCE_DIR}/src/dsol/*.cpp
+)
+
+add_library (
+    dsol_core
+    SHARED
+    ${core_files}
+)
+target_link_libraries(dsol_core
+    dsol_utils
+    absl::span
+)
+
+
+# Compile Node
+
+add_executable(dsol_odom_node app/node_odom.cpp)
+target_link_libraries(dsol_odom_node  dsol_core dsol_utils absl::flags_parse )
+
+add_executable(dsol_data_node app/node_data.cpp)
+target_link_libraries(dsol_data_node  dsol_core dsol_utils absl::flags_parse )

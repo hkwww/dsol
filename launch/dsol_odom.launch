@@ -9,7 +9,7 @@
     <arg name="camera" default="/camera"/>
     <arg name="use_depth" default="false"/>
 
-    <node pkg="dsol" type="sv_dsol_node_odom" name="dsol_odom" output="screen">
+    <node pkg="dsol" type="dsol_odom_node" name="dsol_odom_node" output="screen">
         <rosparam command="load" file="$(find dsol)/config/dsol.yaml"/>
         <rosparam command="load" file="$(find dsol)/config/dsol_d455.yaml"/>
 
