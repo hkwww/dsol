@@ -171,6 +171,7 @@ TrackStatus DirectOdometry::Track(const cv::Mat& image_l,
 
   // Preprocess image (color -> gray -> vignette -> pyramid)
   CHECK(!image_l.empty());
+  // 图像预处理
   Preprocess(image_l, vign_l, grays_l);
   if (image_r.empty()) {
     CHECK(grays_r.empty());
@@ -206,6 +207,8 @@ TrackStatus DirectOdometry::Track(const cv::Mat& image_l,
 
   status.Twc = frame.Twc();
   // Determine whether we need to add a keyframe
+
+  // 检测是否添加关键帧
   status.add_kf = ShouldAddKeyframe();
   return status;
 }
@@ -241,8 +244,11 @@ MapStatus DirectOdometry::Map(bool add_kf, const cv::Mat& depth) {
 void DirectOdometry::Preprocess(const cv::Mat& image,
                                 const VignetteModel& vign,
                                 ImagePyramid& grays) const {
+  // 构建图像金字塔
   grays.resize(cfg_.num_levels);
+  // 转灰度
   ConvertGray(image, grays[0]);
+  // 晕影校正(代码里面没有实现)
   vign.Correct(grays[0]);
   MakePyramid(grays);
 }
@@ -269,11 +275,13 @@ void DirectOdometry::MakePyramid(ImagePyramid& grays) const {
   auto t = ts.Scoped("T0_MakePyramid");
 
   // Make pyramid
+  // 降采样，构建图像金字塔
   for (int l = 1; l < cfg_.num_levels; ++l) {
     cv::pyrDown(grays[l - 1], grays[l]);
   }
 
   // go back and blur the first image to avoid double blurring it
+  // 增加高斯模糊
   cv::GaussianBlur(grays[0], grays[0], {3, 3}, 0);
 }
 
@@ -285,6 +293,7 @@ bool DirectOdometry::TrackFrame() {
   AlignStatus status;
   {
     auto t = ts.Scoped("T1_TrackFrame");
+    // 跟踪当前帧
     status = aligner.Align(window.keyframes(), camera, frame, cfg_.tbb);
   }
 

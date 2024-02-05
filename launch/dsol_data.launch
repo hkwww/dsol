@@ -13,15 +13,15 @@
     <arg name="save" default=""/>
     <arg name="wait_ms" default="10"/>
 
-    <arg name="data" default="vk2"/>
-    <arg name="data_dir" default="/home/chao/Workspace/dataset/vkitti/Scene01/clone"/>
+    <arg name="data" default="tta"/>
+    <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/vkitti/Scene01/clone"/> -->
     <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/kitti/dataset/sequences/00"/> -->
-    <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/tartan_air/gascola/Easy/P003"/> -->
+    <arg name="data_dir" default="/home/hkw/dataset/tartan_air/gascola/P001"/>
     <arg name="data_max_depth" default="100.0"/>
     <arg name="cloud_max_depth" default="50.0"/>
     <arg name="motion_alpha" default="0.5"/>
 
-    <node pkg="dsol" type="sv_dsol_node_data" name="dsol_data" output="screen">
+    <node pkg="dsol" type="dsol_data_node" name="dsol_data_node" output="screen">
         <rosparam command="load" file="$(find dsol)/config/dsol.yaml"/>
         <rosparam command="load" file="$(find dsol)/config/dsol_$(arg data).yaml"/>
 
@@ -41,4 +41,7 @@
         <param name="end" type="int" value="$(arg end)"/>
         <param name="reverse" type="bool" value="$(arg reverse)"/>
     </node>
+
+
+     <node pkg="rviz" type="rviz" name="dsol_viz" args="-d $(find dsol)/rviz/dsol.rviz" />
 </launch>

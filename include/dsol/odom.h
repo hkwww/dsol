@@ -55,6 +55,7 @@ struct DirectOdometry {
   size_t total_bytes_{};  // number of bytes used
 
  public:
+  /// @brief 当前帧
   Frame frame;
   Camera camera;
   KeyframeWindow window;
@@ -63,9 +64,13 @@ struct DirectOdometry {
   FrameAligner aligner;
   BundleAdjuster adjuster;
 
+  /// @brief 图像金字塔(左)
   ImagePyramid grays_l;
+  /// @brief 图像金字塔(右)
   ImagePyramid grays_r;
+  /// @brief 晕影模型
   VignetteModel vign_l;
+  /// @brief 晕影模型
   VignetteModel vign_r;
 
   ColorMap cmap;
