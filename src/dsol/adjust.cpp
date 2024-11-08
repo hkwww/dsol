@@ -76,7 +76,8 @@ AdjustStatus BundleAdjuster::AdjustLevel(KeyframePtrSpan keyframes,
       VLOG(2) << LogIter({level, num_levels},
                          {iter, max_iters},
                          {block_.num_costs(), block_.cost()});
-      VLOG(1) << fmt::format("=== Level {} not enough costs {}", level, status);
+      VLOG(1) << fmt::format(
+          "=== Level {} not enough costs {}", level, status.Repr());
       return status;
     }
 

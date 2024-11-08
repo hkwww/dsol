@@ -184,7 +184,8 @@ AlignStatus FrameAligner::AlignLevel(KeyframePtrSpan keyframes,
                          {hess.num_costs(), hess.cost()});
       status.num_levels = 0;
       status.converged = false;
-      VLOG(1) << fmt::format("=== Level {} not enough costs {}", level, status);
+      VLOG(1) << fmt::format(
+          "=== Level {} not enough costs {}", level, status.Repr());
       return status;
     }
 
